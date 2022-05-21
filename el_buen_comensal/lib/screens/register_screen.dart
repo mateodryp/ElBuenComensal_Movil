@@ -1,18 +1,18 @@
 import 'package:el_buen_comensal/screens/screens.dart';
+import 'package:el_buen_comensal/services/user_services.dart';
 import 'package:el_buen_comensal/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/register_form_provider.dart';
 import '../theme/app_theme.dart';
 import '../ui/input_login_decoration.dart';
 import '../ui/input_register_decoration.dart';
 
 class RegisterScreen extends StatefulWidget {
-
-
   const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
-
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -24,12 +24,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String confContrasena = "";
   String edad = "";
   bool aceptTerms = false;
+  GlobalKey<FormState>? register;
 
-  
+  @override
+  void dispose() {
+    register?.currentState?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    
-    
+    final registerForm = Provider.of<RegisterFormProvider>(context);
+
+    register = registerForm.formkey;
+
     return Scaffold(
         backgroundColor: AppTheme.dark_gray,
         body: SingleChildScrollView(
@@ -40,107 +48,187 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Text("Formulario de registro",
                   style: TextStyle(color: Colors.white, fontSize: 28))),
           Form(
+              key: register,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
                   children: [
                     SizedBox(height: 30),
-                    InputRegister(hint_text: 'Nombres',type: TextInputType.text,isPasswd: false,validate: validateEmpty, changed: (value){
-                      setState(() {
-                        nombres = value;
-                      });
-                    }),
+                    InputRegister(
+                        hint_text: 'Nombres',
+                        type: TextInputType.text,
+                        isPasswd: false,
+                        validate: validateEmpty,
+                        changed: (value) {
+                          setState(() {
+                            nombres = value;
+                          });
+                        }),
                     SizedBox(height: 15),
-                    InputRegister(hint_text: 'Apellidos',type: TextInputType.text,isPasswd: false,validate: validateEmpty,changed: (value){
-                      setState(() {
-                        apellidos = value;
-                      });
-                    }),
+                    InputRegister(
+                        hint_text: 'Apellidos',
+                        type: TextInputType.text,
+                        isPasswd: false,
+                        validate: validateEmpty,
+                        changed: (value) {
+                          setState(() {
+                            apellidos = value;
+                          });
+                        }),
                     SizedBox(height: 15),
-                    InputRegister(hint_text: 'Correo Electrónico',type: TextInputType.emailAddress,isPasswd: false,validate: validateEmpty, changed: (value){
-                      setState(() {
-                        correo = value;
-                      });
-                    }),
+                    InputRegister(
+                        hint_text: 'Correo Electrónico',
+                        type: TextInputType.emailAddress,
+                        isPasswd: false,
+                        validate: validateEmpty,
+                        changed: (value) {
+                          setState(() {
+                            correo = value;
+                          });
+                        }),
                     SizedBox(height: 15),
-                    InputRegister(hint_text: 'Telefono',type: TextInputType.phone,isPasswd: false,validate: validateEmpty, changed: (value){
-                      setState(() {
-                        telefono = value;
-                      });
-                    }),
+                    InputRegister(
+                        hint_text: 'Telefono',
+                        type: TextInputType.phone,
+                        isPasswd: false,
+                        validate: validateEmpty,
+                        changed: (value) {
+                          setState(() {
+                            telefono = value;
+                          });
+                        }),
                     SizedBox(height: 15),
-                    InputRegister(hint_text: 'Edad',type: TextInputType.number,isPasswd: true,validate: validateEmpty,changed: (value){
-                      setState(() {
-                        edad = value;
-                      });
-                    }),
+                    InputRegister(
+                        hint_text: 'Edad',
+                        type: TextInputType.number,
+                        isPasswd: true,
+                        validate: validateEmpty,
+                        changed: (value) {
+                          setState(() {
+                            edad = value;
+                          });
+                        }),
                     SizedBox(height: 15),
-                    InputRegister(hint_text: 'Contraseña',type: TextInputType.text,isPasswd: true,validate: validatePasswordSize, changed: (value){
-                      setState(() {
-                        contrasena = value;
-                      });
-                    }),
+                    InputRegister(
+                        hint_text: 'Contraseña',
+                        type: TextInputType.text,
+                        isPasswd: true,
+                        validate: validatePasswordSize,
+                        changed: (value) {
+                          setState(() {
+                            contrasena = value;
+                          });
+                        }),
                     SizedBox(height: 15),
-                    InputRegister(hint_text: 'Confirmar Contraseña',type: TextInputType.text,isPasswd: true,validate: validateConfirmPassword,changed: (value){
-                      setState(() {
-                        confContrasena = value;
-                      });
-                    }),
-                    
+                    InputRegister(
+                        hint_text: 'Confirmar Contraseña',
+                        type: TextInputType.text,
+                        isPasswd: true,
+                        validate: validateConfirmPassword,
+                        changed: (value) {
+                          setState(() {
+                            confContrasena = value;
+                          });
+                        }),
                     SizedBox(height: 15),
                     CheckboxListTile(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      activeColor: AppTheme.primary_yellow,
-                      title: Text("Aceptar terminos y condiciones", style: TextStyle(fontSize: 14, color: Colors.white)),
-                      value: aceptTerms, 
-                      onChanged: (value){
-                        setState(() {
-                          aceptTerms = value!;
-                        });
-                      }),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        activeColor: AppTheme.primary_yellow,
+                        title: Text("Aceptar terminos y condiciones",
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.white)),
+                        value: aceptTerms,
+                        onChanged: (value) {
+                          setState(() {
+                            aceptTerms = value!;
+                          });
+                        }),
                     const SizedBox(height: 15),
                     MaterialButton(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       color: AppTheme.primary_yellow,
-                      disabledColor: AppTheme.primary_yellow,
-                      onPressed: null,
+                      disabledColor: Color.fromARGB(255, 245, 212, 130),
+                      onPressed: registerForm.isLoading
+                          ? null
+                          : () async {
+                              FocusScope.of(context).unfocus();
+                              final userServices = Provider.of<UserServices>(
+                                  context,
+                                  listen: false);
+                              if (!registerForm.isValidForm()) return;
+                              registerForm.isLoading = true;
+                              String respuesta = await userServices.createUser(
+                                  nombres,
+                                  apellidos,
+                                  correo,
+                                  telefono,
+                                  contrasena,
+                                  edad);
+                              print("llego:" + respuesta);
+                              if (respuesta == "1") {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialogCustom(
+                                          title: "¡Usuario Registrado!",
+                                          message:
+                                              "Su usuario se ha registrado de manera exitosa",
+                                          rute: "login");
+                                    });
+                              } else {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialogCustom(
+                                        title: "¡Correo en uso!",
+                                        message:
+                                            "Ya existe una cuenta asociada al correo",
+                                      );
+                                    });
+                              }
+                              registerForm.isLoading = false;
+                            },
                       elevation: 0,
                       child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
-                        child: const Align(alignment: Alignment.center,child: Text('Registrarme', style: TextStyle(color: Colors.white, fontSize: 20)))
-                      ),
+                          width: double.infinity,
+                          height: 50,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 60, vertical: 10),
+                          child: const Align(
+                              alignment: Alignment.center,
+                              child: Text('Registrarme',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20)))),
                     ),
                     const SizedBox(height: 50),
                   ],
                 ),
               ))
-        ]))
-        );
-        
+        ])));
   }
-  
-  void changedValue(String? name, String value){
+
+  void changedValue(String? name, String value) {
     setState(() {
-       name : value;
+      name:
+      value;
     });
   }
 
-  validateConfirmPassword(String value){
+  validateConfirmPassword(String value) {
     if (value.isNotEmpty) {
-    if(value==contrasena){
-      return null;
-    }else{
-      return "Contraseñas no coinciden";
+      if (value == contrasena) {
+        return null;
+      } else {
+        return "Contraseñas no coinciden";
+      }
+    } else {
+      return "Por favor llene el campo";
     }
-  } else {
-    return "Por favor llene el campo";
   }
-  }
-
-  
 }
 
 class HeaderRegister extends StatelessWidget {
@@ -169,7 +257,7 @@ class HeaderRegister extends StatelessWidget {
   }
 }
 
-validateEmpty(String? value){
+validateEmpty(String? value) {
   if (value!.isNotEmpty) {
     return null;
   } else {
@@ -177,17 +265,14 @@ validateEmpty(String? value){
   }
 }
 
-validatePasswordSize(String? value){
+validatePasswordSize(String? value) {
   if (value!.isNotEmpty) {
-    if(value.length > 8){
+    if (value.length > 8) {
       return null;
-    }else{
+    } else {
       return "Contraseña minimo de 8 caracteres";
     }
   } else {
     return "Por favor llene el campo";
   }
 }
-
-
-

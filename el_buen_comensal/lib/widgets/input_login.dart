@@ -8,21 +8,31 @@ class InputLogin extends StatelessWidget {
   final IconData icon;
   final TextInputType type;
   final bool isPasswd;
+  final Function validate;
+  final Function(String) changed;
 
   const InputLogin(
       {Key? key,
       required this.hint_text,
       required this.icon,
       required this.type,
-      required this.isPasswd})
+      required this.isPasswd,
+      required this.changed,
+      required this.validate})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        validator: (value) {
+          return validate(value);
+        },
         obscureText: isPasswd,
         keyboardType: type,
         cursorColor: AppTheme.primary_yellow,
+        onChanged: (value) {
+          changed(value);
+        },
         style: const TextStyle(
           height: 1.5,
           fontSize: 20,

@@ -12,6 +12,9 @@ class InputLoginDecoration {
             borderSide: BorderSide(color: AppTheme.primary_yellow, width: 4)),
         hintText: hintText,
         suffixIcon: Icon(icon, color: AppTheme.primary_yellow),
+        errorStyle: TextStyle(color: AppTheme.error_inputs),
+        focusedErrorBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: AppTheme.error_inputs, width: 5)),
         );
   }
 }

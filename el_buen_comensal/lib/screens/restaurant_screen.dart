@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:el_buen_comensal/theme/app_theme.dart';
 import 'package:el_buen_comensal/widgets/widgets.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_info_provider.dart';
+import '../share preferences/Preferences.dart';
 
 
 
@@ -137,6 +140,7 @@ class UsersComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Padding(
       padding: EdgeInsets.symmetric(horizontal:20),
       child: Column(
@@ -195,9 +199,10 @@ class ButtonAddList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserInfoProvider>(context);
     return MaterialButton(
      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-     onPressed: () => Navigator.pushNamed(context, 'home'),
+     onPressed: () => print(userProvider.user!.idUser.toString()),
      color: color,
      elevation: 0,
      child: Container(
