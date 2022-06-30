@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:el_buen_comensal/screens/give_information.dart';
 import 'package:el_buen_comensal/screens/home_screen.dart';
 import 'package:el_buen_comensal/screens/login_screen.dart';
 import 'package:el_buen_comensal/share%20preferences/Preferences.dart';
@@ -25,7 +26,11 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
       if(user.code == 1){
         Future.delayed(Duration(seconds: 2));
         context.read<UserInfoProvider>().setUser(user);
-        return Future.value(new HomeScreen());
+        if(user.userNew){
+          return Future.value(new GiveInformationScreen());
+        }else{
+          return Future.value(new HomeScreen());
+        }
       }else{
         await Future.delayed(Duration(seconds: 3));
         return Future.value(new LoginScreen());

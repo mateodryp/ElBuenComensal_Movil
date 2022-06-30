@@ -84,4 +84,29 @@ class UserServices extends ChangeNotifier {
     }
     
   }
+
+  Future<bool> giveInformation(int id_user ,bool isVegan, String interest, String enviroment) async {
+    
+    final Map<String, dynamic> data = {
+      "user_id": id_user,
+      "vegetarian": isVegan,
+      "interest": interest,
+      "environment": enviroment,
+    };
+
+    const Map<String, String> header = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final url = Uri.http(_baseUrl, "/users/update_info/");
+    final resp = await http.put(url, body: json.encode(data), headers: header);
+    final Map<String, dynamic> decodedResp = json.decode(resp.body);
+    if(decodedResp["code"].toString() == "1"){
+      return true;
+    }else{
+      return false;
+    }
+    
+  }
 }

@@ -34,15 +34,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'El Buen Comensal',
-      //home: SplashFuturePage(),
-      //home: GiveInformationScreen(),
-      home: HomeScreen(),
+      home: SplashFuturePage(),
+      //home: HomeScreen(),
       //initialRoute: "login",
       routes: {
         'login': (_) => LoginScreen(),
         'register': (_) => RegisterScreen(),
         'home': (_) => HomeScreen(),
         'restaurant': (_) => RestaurantScreen(),
+        'give_information' : (_) => GiveInformationScreen()
       },
       theme: AppTheme.lightTheme,
     );

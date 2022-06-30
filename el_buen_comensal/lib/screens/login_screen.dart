@@ -129,7 +129,12 @@ class _FormWidgetState extends State<FormWidget> {
                         print(Preferences.GetIdUser);
                         print(Preferences.GetToken);
                         context.read<UserInfoProvider>().setUser(respuesta);
-                        Navigator.pushNamed(context, "home");
+                        if(respuesta.userNew){
+                          Navigator.pushNamed(context, "give_information");
+                        }else{
+                          Navigator.pushNamed(context, "home");
+                        }
+                        
                       } else {
                         showDialog(
                             barrierDismissible: false,

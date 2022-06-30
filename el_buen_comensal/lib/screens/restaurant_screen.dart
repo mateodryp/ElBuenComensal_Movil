@@ -202,7 +202,7 @@ class ButtonAddList extends StatelessWidget {
     final userProvider = Provider.of<UserInfoProvider>(context);
     return MaterialButton(
      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-     onPressed: () => print(userProvider.user!.idUser.toString()),
+     onPressed: () => Navigator.pushNamed(context, "login"),
      color: color,
      elevation: 0,
      child: Container(
