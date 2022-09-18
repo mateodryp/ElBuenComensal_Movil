@@ -19,18 +19,20 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 30),
-                  RestaurantSlider(),
+                  RestaurantSlider(title: "Restaurantes Recomendados"),
                   SizedBox(height: 20),
-                  RestaurantSlider(),
+                  RestaurantSlider(title: "Restaurantes Mejor Calificados"),
                   SizedBox(height: 20),
-                  RestaurantSlider(),
+                  RestaurantSlider(title: "Restaurantes Populares"),
+                  SizedBox(height: 20),
+                  RestaurantSlider(title: "Restaurantes Nuevos"),
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar:ButtonBarHome() ,
+      bottomNavigationBar:ButtonBarHome(position: 0) 
       
     );
   }

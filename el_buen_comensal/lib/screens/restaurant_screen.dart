@@ -128,7 +128,7 @@ class RestaurantScreen extends StatelessWidget {
         ),
       ),
 
-      bottomNavigationBar: ButtonBarHome(),
+      bottomNavigationBar: ButtonBarHome(position: 0),
     );
   }
 }
