@@ -1,15 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-final List<String> imgList = [
-  'https://www.disfrutarosario.com/wp-content/uploads/2020/01/restaurant-939435_960_720.jpg',
-  'https://ewscripps.brightspotcdn.com/dims4/default/53041b7/2147483647/strip/true/crop/1280x720+0+67/resize/1280x720!/quality/90/?url=http%3A%2F%2Fewscripps-brightspot.s3.amazonaws.com%2Fdc%2Fb0%2F4e8e861f414fb7124097b7e787b5%2Ffirst-and-last-a.jpeg',
-  'https://www.cucinare.tv/wp-content/uploads/2019/04/Restaurant-1.jpg',
-];
+final List<String> imgList = [];
 
 class CarouselImages extends StatelessWidget {
+
+  final List<String> imgList;
+  
   const CarouselImages({
-    Key? key,
+    Key? key, required this.imgList,
   }) : super(key: key);
 
   @override
@@ -24,7 +23,7 @@ class CarouselImages extends StatelessWidget {
           ),
           items: imgList.map((item) => 
             Container(
-              child: Center(child:Image.network(item, fit: BoxFit.cover, width: double.infinity,height: 270)),
+              child: Center(child:Image.network("http://144.22.197.146:8000" +item, fit: BoxFit.cover, width: double.infinity,height: 270)),
             )
           ).toList(),
       ),

@@ -1,5 +1,6 @@
 import 'package:el_buen_comensal/providers/login_form_provider.dart';
 import 'package:el_buen_comensal/providers/register_form_provider.dart';
+import 'package:el_buen_comensal/providers/restaurants_provider.dart';
 import 'package:el_buen_comensal/providers/user_info_provider.dart';
 import 'package:el_buen_comensal/screens/give_information.dart';
 import 'package:el_buen_comensal/screens/splash_screen.dart';
@@ -24,6 +25,7 @@ class AppState extends StatelessWidget {
       ChangeNotifierProvider(create: (_) => RegisterFormProvider()),
       ChangeNotifierProvider(create: (_) => LoginFormProvider()),
       ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+      ChangeNotifierProvider(create: (_) => RestaurantProvider(), lazy: false)
     ], child: MyApp());
   }
 }

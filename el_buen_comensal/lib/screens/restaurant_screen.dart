@@ -2,20 +2,240 @@ import 'package:flutter/material.dart';
 import 'package:el_buen_comensal/theme/app_theme.dart';
 import 'package:el_buen_comensal/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../models/Restaurant.dart';
 import '../providers/user_info_provider.dart';
 import '../share preferences/Preferences.dart';
 
 
 
 
-class RestaurantScreen extends StatelessWidget {
+class RestaurantScreen extends StatefulWidget {
    
   const RestaurantScreen({Key? key}) : super(key: key);
-  
-  
+
+  @override
+  State<RestaurantScreen> createState() => _RestaurantScreenState();
+}
+
+class _RestaurantScreenState extends State<RestaurantScreen> {
+
+  String sugerencia = "";
+  String password = "";
+  int calification = 0;
+
+  void displaySuggestions(BuildContext context){
+    showDialog(barrierDismissible: false,context: context, builder: (context){
+      return AlertDialog(
+        elevation: 5,
+        title: Center(child: Text("Sugerencia")),
+        shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+               Card(
+                color: Color.fromARGB(255, 216, 216, 216),
+                child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  cursorColor: AppTheme.primary_yellow,
+                  maxLines: 10, //or null 
+                  decoration: InputDecoration.collapsed(hintText: "Escriba su sugerencia"),
+                  style:  TextStyle(height: 1,fontSize: 14,),
+                ),
+              )
+            )
+            ],
+          ),
+        actions: [
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              color: AppTheme.primary_yellow,
+              disabledColor: Color.fromARGB(255, 245, 212, 130),
+              elevation: 0,
+              onPressed: () {Navigator.pop(context);},
+              child: Container(
+                  width: 70,
+                  height: 30,
+                  child: const Align(
+                      alignment: Alignment.center,
+                      child: Text('Cancelar',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14))))
+            ),
+            SizedBox(width: 20),
+            MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              color: AppTheme.primary_yellow,
+              disabledColor: Color.fromARGB(255, 245, 212, 130),
+              elevation: 0,
+              onPressed: () {Navigator.pop(context);},
+              child: Container(
+                  width: 70,
+                  height: 30,
+                  child: const Align(
+                      alignment: Alignment.center,
+                      child: Text('Enviar',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14))))
+            ),
+            ],)
+
+            
+
+          ],
+      );
+    });
+  }
+
+  void displayComments(BuildContext context){
+    showDialog(barrierDismissible: false,context: context, builder: (context){
+      return AlertDialog(
+        elevation: 5,
+        title: Center(child: Text("Calificar")),
+        shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children:  [
+               const Card(
+                color: Color.fromARGB(255, 216, 216, 216),
+                child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  cursorColor: AppTheme.primary_yellow,
+                  maxLines: 6, //or null 
+                  decoration: InputDecoration.collapsed(hintText: "Escriba su opinion"),
+                  style:  TextStyle(height: 1,fontSize: 14,),
+                ),
+              )
+            ),
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Calificación: "),
+                SizedBox(width: 20),
+                Container(
+          width: 80,
+          height: 50,
+          child: InputDecorator(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(4.0))),
+              contentPadding: EdgeInsets.all(2),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
+                value: "1",
+                style: TextStyle(fontSize: 14, color: AppTheme.dark_gray, ),
+                iconEnabledColor: AppTheme.primary_yellow,
+                iconDisabledColor: Color.fromARGB(255, 245, 212, 130),
+                items: [
+                  DropdownMenuItem(child: Center(child: Text("1")), value: "1"),
+                  DropdownMenuItem(child: Center(child: Text("2")), value: "2"),
+                  DropdownMenuItem(child: Center(child: Text("3")), value: "3"),
+                  DropdownMenuItem(child: Center(child: Text("4")), value: "4"),
+                  DropdownMenuItem(child: Center(child: Text("5")), value: "5"),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    calification = int.parse(value as String);
+                  });
+                },
+                isExpanded: true,
+              ),
+            ),
+          ),
+        ),
+              ],
+            )
+            ],
+          ),
+        actions: [
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              color: AppTheme.primary_yellow,
+              disabledColor: Color.fromARGB(255, 245, 212, 130),
+              elevation: 0,
+              onPressed: () {Navigator.pop(context);},
+              child: Container(
+                  width: 70,
+                  height: 30,
+                  child: const Align(
+                      alignment: Alignment.center,
+                      child: Text('Cancelar',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14))))
+            ),
+            SizedBox(width: 20),
+            MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              color: AppTheme.primary_yellow,
+              disabledColor: Color.fromARGB(255, 245, 212, 130),
+              elevation: 0,
+              onPressed: () {Navigator.pop(context);},
+              child: Container(
+                  width: 70,
+                  height: 30,
+                  child: const Align(
+                      alignment: Alignment.center,
+                      child: Text('Enviar',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14))))
+            ),
+            ],)
+
+            
+
+          ],
+      );
+    });
+  }
+
+  void displayFavorite(BuildContext context){
+    showDialog(barrierDismissible: false,context: context, builder: (context){
+      return AlertDialog(
+        elevation: 5,
+        title: Text("Favoritos"),
+        shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Este es el contenido de la alerta'),
+              SizedBox( height: 10 ),
+              FlutterLogo( size: 100 )
+            ],
+          ),
+        actions: [
+
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar')
+            ),
+
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Ok')
+            ),
+
+          ],
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
+    final Restaurant restaurant = ModalRoute.of(context)!.settings.arguments as Restaurant;
     double width = MediaQuery.of(context).size.width;
     
     return  Scaffold(
@@ -27,13 +247,13 @@ class RestaurantScreen extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    CarouselImages(),
-                    NumberPhotos(),
+                    CarouselImages(imgList: restaurant.images),
+                    NumberPhotos(number: restaurant.images.length),
                     BackArrow(),
                   ],
                 ),
                 SizedBox(height: 30),
-                Text("La Esquina Real", style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600)),
+                Text(restaurant.name, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600)),
                 SizedBox(height: 10),
                 Container(color: AppTheme.dark_gray,height: 1,width: width*0.8,),
                 SizedBox(height: 10),
@@ -43,13 +263,13 @@ class RestaurantScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                  Icon(Icons.star, color: AppTheme.primary_yellow, size: 36),
-                  Icon(Icons.star, color: AppTheme.primary_yellow, size: 36),
-                  Icon(Icons.star, color: AppTheme.primary_yellow, size: 36),
-                  Icon(Icons.star, color: AppTheme.primary_yellow, size: 36),
-                  Icon(Icons.star, color: AppTheme.primary_yellow, size: 36),
+                  Icon(Icons.star, color: restaurant.punctuation >= 1 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                  Icon(Icons.star, color: restaurant.punctuation >= 2 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                  Icon(Icons.star, color: restaurant.punctuation >= 3 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                  Icon(Icons.star, color: restaurant.punctuation >= 4 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                  Icon(Icons.star, color: restaurant.punctuation == 5 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
                   SizedBox(width: 5),
-                  Text("5.0", style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400)),
+                  Text(restaurant.punctuation.toString(), style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400)),
                   
                 ],),
                 SizedBox(height: 10),
@@ -68,47 +288,47 @@ class RestaurantScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text("Horarios: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text("9:00 AM - 22:00 PM", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    Text(restaurant.schedule, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
                   ],
                 ),
                 SizedBox(height: 10),
                 Row(
                   children: [
                     Text("Ubicación: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text("Cll 42 # 127 - 4", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    Text(restaurant.address, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
                   ],
                 ),
                 SizedBox(height: 10),
                 Row(
                   children: [
                     Text("Tipo de comida: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text("Colombiana", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    Text(restaurant.typeFood, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
                   ],
                 ),
                 SizedBox(height: 10),
                 Row(
                   children: [
                     Text("Precio Promedio: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text("40.000 COP", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    Text( restaurant.prices.toString() + " COP", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
                   ],
                 ),
                 SizedBox(height: 20),
-                ButtonDowloadMenu(width: width),
+                ButtonDowloadMenu(width: width, urlMenu: restaurant.menu),
                 SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                   Text("En Pocas Palabras ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
                   SizedBox(height: 5),
-                  Text("Eiusmod anim aute ad do exercitation. Elit proident sunt occaecat tempor veniam eu ut reprehenderit. Laborum ex sit ipsum proident qui minim est sunt ipsum incididunt veniam consequat. Deserunt officia consequat sint esse mollit consectetur ex commodo tempor ipsum adipisicing irure adipisicing mollit. Nisi consequat sunt Lorem mollit. Labore qui esse qui fugiat.", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
+                  Text(restaurant.description, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
                 ],),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ButtonAddList(width: width,text: "Añadir", icono: Icon(Icons.map_outlined, color: Colors.white, size: 24), color: Color(0xff04A997)),
-                    ButtonAddList(width: width,text: "Calificar", icono: Icon(Icons.check, color: Colors.white, size: 24), color: Color(0xffA3D818)),
-                    ButtonAddList(width: width,text: "Añadir", icono: Icon(Icons.favorite, color: Colors.white, size: 24), color: Color(0xffEB6D4A)),
+                    ButtonAddList(width: width,text: "Sugerir", icono: Icon(Icons.map_outlined, color: Colors.white, size: 24), color: Color(0xff04A997), action: (){ displaySuggestions(context);}),
+                    ButtonAddList(width: width,text: "Calificar", icono: Icon(Icons.check, color: Colors.white, size: 24), color: Color(0xffA3D818),action: (){ displayComments(context);}),
+                    ButtonAddList(width: width,text: "Añadir", icono: Icon(Icons.favorite, color: Colors.white, size: 24), color: Color(0xffEB6D4A),action: (){ displayFavorite(context);}),
                    
                    
                 ]),
@@ -130,6 +350,8 @@ class RestaurantScreen extends StatelessWidget {
 
       bottomNavigationBar: ButtonBarHome(position: 0),
     );
+
+    
   }
 }
 
@@ -189,10 +411,11 @@ class ButtonAddList extends StatelessWidget {
   final Icon icono;
   final String text;
   final Color color;
+  final Function action;
 
   const ButtonAddList({
     Key? key,
-    required this.width, required this.icono, required this.text, required this.color,
+    required this.width, required this.icono, required this.text, required this.color, required this.action,
   }) : super(key: key);
 
   final double width;
@@ -202,7 +425,7 @@ class ButtonAddList extends StatelessWidget {
     final userProvider = Provider.of<UserInfoProvider>(context);
     return MaterialButton(
      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-     onPressed: () => Navigator.pushNamed(context, "login"),
+     onPressed: () => action(),
      color: color,
      elevation: 0,
      child: Container(
@@ -222,24 +445,44 @@ class ButtonAddList extends StatelessWidget {
   }
 }
 
-class ButtonDowloadMenu extends StatelessWidget {
+class ButtonDowloadMenu extends StatefulWidget {
+  
+
   const ButtonDowloadMenu({
     Key? key,
-    required this.width,
+    required this.width, required this.urlMenu,
   }) : super(key: key);
 
   final double width;
+  final String urlMenu;
+
+  @override
+  State<ButtonDowloadMenu> createState() => _ButtonDowloadMenuState();
+}
+
+class _ButtonDowloadMenuState extends State<ButtonDowloadMenu> {
+
+  Future<void>? _launched;
+
+  Future<void> _launchInBrowser(Uri url)async{
+    if(!await launchUrl(url, mode: LaunchMode.externalApplication)){
+      throw 'no se pudo';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Uri toLaunch =Uri(scheme: 'http', host: '144.22.197.146', path: widget.urlMenu, port:8000 );
     return MaterialButton(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: AppTheme.dark_gray,
       disabledColor: AppTheme.dark_gray,
-      onPressed: () => Navigator.pushNamed(context, 'home'),
+      onPressed: () => setState(() {
+                  _launched = _launchInBrowser(toLaunch);
+                }),
       elevation: 0,
       child: Container(
-        width: width*0.6,
+        width: widget.width*0.6,
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
@@ -273,8 +516,10 @@ class BackArrow extends StatelessWidget {
 }
 
 class NumberPhotos extends StatelessWidget {
+
+  final int number;
   const NumberPhotos({
-    Key? key,
+    Key? key, required this.number,
   }) : super(key: key);
 
   @override
@@ -286,7 +531,7 @@ class NumberPhotos extends StatelessWidget {
         height: 25,
         width: 80,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: AppTheme.dark_gray.withOpacity(0.7)),
-        child: Text("3 Fotos", style: TextStyle(color: Colors.white, fontSize: 16)),
+        child: Text( number.toString() + " Fotos", style: TextStyle(color: Colors.white, fontSize: 16)),
         alignment:Alignment.center,
       ),
     );
@@ -320,3 +565,4 @@ class _LineSeparator extends StatelessWidget {
     );
   }
 }
+

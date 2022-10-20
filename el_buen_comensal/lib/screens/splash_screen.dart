@@ -43,7 +43,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
   @override
   Widget build(BuildContext context) {
     return EasySplashScreen(
-      logoSize: 120,
+      logoWidth: 120,
       logo: Image(image: AssetImage('assets/logo_white.png')),
       backgroundColor: AppTheme.primary_yellow,
       showLoader: true,

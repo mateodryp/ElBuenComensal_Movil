@@ -1,26 +1,39 @@
+import 'package:el_buen_comensal/models/Restaurant.dart';
+import 'package:el_buen_comensal/providers/restaurants_provider.dart';
+import 'package:el_buen_comensal/services/services.dart';
 import 'package:el_buen_comensal/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class RestaurantSlider extends StatelessWidget {
+class RestaurantSlider extends StatefulWidget {
   final String title;
 
   const RestaurantSlider({Key? key, required this.title,}): super(key: key);
 
   @override
+  State<RestaurantSlider> createState() => _RestaurantSliderState();
+}
+
+class _RestaurantSliderState extends State<RestaurantSlider> {
+  @override
   Widget build(BuildContext context) {
+
+    final restaurant_provider = Provider.of<RestaurantProvider>(context);
+
+
     return Container(
       width: double.infinity,
       height: 250,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Text(title,style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300)),
+        Text(widget.title,style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300)),
         Expanded(
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 10,
+            itemCount: restaurant_provider.prueba.length,
             itemBuilder: (_, int index){
-              return GestureDetector(child: _RestaurantCard(), onTap: () =>  Navigator.pushNamed(context, 'restaurant'));
+              return GestureDetector(child: _RestaurantCard(restaurant: restaurant_provider.prueba[index],), onTap: () =>  Navigator.pushNamed(context, 'restaurant', arguments: restaurant_provider.prueba[index]));
             }
           ),
         )
@@ -30,6 +43,10 @@ class RestaurantSlider extends StatelessWidget {
 }
 
 class _RestaurantCard extends StatelessWidget {
+
+  final Restaurant restaurant;
+
+  const _RestaurantCard({Key? key, required this.restaurant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,21 +60,21 @@ class _RestaurantCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 110,
-            child: Image(image: NetworkImage("https://www.disfrutarosario.com/wp-content/uploads/2020/01/restaurant-939435_960_720.jpg"), fit: BoxFit.cover),
+            child: Image(image: NetworkImage("http://144.22.197.146:8000" + restaurant.images[0]), fit: BoxFit.cover),
           ),
           SizedBox(height: 3),
-          Text("La Esquina Real", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          Text("Comida Colombiana", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
-          Text("40.000 COP", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
-          Text("Cll 42 # 127 - 4", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
+          Text(restaurant.name, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          Text(restaurant.typeFood, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300)),
+          Text(restaurant.prices.toString() + " COP", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300)),
+          Text(restaurant.address, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w300)),
           Row(children: [
-            Icon(Icons.star, color: AppTheme.primary_yellow),
-            Icon(Icons.star, color: AppTheme.primary_yellow),
-            Icon(Icons.star, color: AppTheme.primary_yellow),
-            Icon(Icons.star, color: AppTheme.primary_yellow),
-            Icon(Icons.star, color: AppTheme.primary_yellow),
+            Icon(Icons.star, color: restaurant.punctuation >= 1 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: restaurant.punctuation >= 2 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: restaurant.punctuation >= 3 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: restaurant.punctuation >= 4 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: restaurant.punctuation == 5 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
             SizedBox(width: 5),
-            Text("5.0", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            Text(restaurant.punctuation.toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ],)
 
 
