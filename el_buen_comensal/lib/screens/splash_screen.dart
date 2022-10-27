@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:el_buen_comensal/providers/restaurants_provider.dart';
 import 'package:el_buen_comensal/screens/give_information.dart';
 import 'package:el_buen_comensal/screens/home_screen.dart';
 import 'package:el_buen_comensal/screens/login_screen.dart';
@@ -21,10 +22,11 @@ class SplashFuturePage extends StatefulWidget {
 class _SplashFuturePageState extends State<SplashFuturePage> {
   Future<Widget> futureCall() async {
     final userServices = Provider.of<UserServices>(context,listen: false);
+    final restaurantServices = Provider.of<RestaurantProvider>(context,listen: false);
     if(Preferences.GetIdUser != "" && Preferences.GetToken != ""){
       User user = await userServices.checkSession(int.parse(Preferences.GetIdUser), Preferences.GetToken);
       if(user.code == 1){
-        Future.delayed(Duration(seconds: 2));
+        await Future.delayed(Duration(seconds: 10));
         context.read<UserInfoProvider>().setUser(user);
         if(user.userNew){
           return Future.value(new GiveInformationScreen());

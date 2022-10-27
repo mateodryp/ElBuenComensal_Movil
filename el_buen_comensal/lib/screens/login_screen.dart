@@ -119,6 +119,7 @@ class _FormWidgetState extends State<FormWidget> {
                       FocusScope.of(context).unfocus();
                       final userServices =
                           Provider.of<UserServices>(context, listen: false);
+                      print(loginForm.isValidForm());
                       if (!loginForm.isValidForm()) return;
                       loginForm.isLoading = true;
                       User respuesta =

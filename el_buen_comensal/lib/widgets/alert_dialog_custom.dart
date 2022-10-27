@@ -33,7 +33,7 @@ class AlertDialogCustom extends StatelessWidget {
           child: MaterialButton(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             color: AppTheme.primary_yellow,
-            onPressed: () => rute!.isEmpty ? Navigator.pop(context) : Navigator.of(context).pushNamedAndRemoveUntil("login", (Route<dynamic> route) => false),
+            onPressed: () => rute!.isEmpty ? Navigator.pop(context) : Navigator.of(context).pushNamedAndRemoveUntil(rute!, (Route<dynamic> route) => false),
             elevation: 0,
             child: Container(
               width: 60,

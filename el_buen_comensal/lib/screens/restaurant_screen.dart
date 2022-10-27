@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/Restaurant.dart';
 import '../providers/user_info_provider.dart';
+import '../services/user_services.dart';
 import '../share preferences/Preferences.dart';
+import 'package:el_buen_comensal/share%20preferences/Preferences.dart';
 
 
 
@@ -21,10 +23,11 @@ class RestaurantScreen extends StatefulWidget {
 class _RestaurantScreenState extends State<RestaurantScreen> {
 
   String sugerencia = "";
+  String comentario = "";
   String password = "";
   int calification = 0;
 
-  void displaySuggestions(BuildContext context){
+  void displaySuggestions(BuildContext context, int id_restaurant){
     showDialog(barrierDismissible: false,context: context, builder: (context){
       return AlertDialog(
         elevation: 5,
@@ -32,7 +35,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
         content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children:  [
                Card(
                 color: Color.fromARGB(255, 216, 216, 216),
                 child: Padding(
@@ -42,6 +45,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   maxLines: 10, //or null 
                   decoration: InputDecoration.collapsed(hintText: "Escriba su sugerencia"),
                   style:  TextStyle(height: 1,fontSize: 14,),
+                  onChanged: (value){
+                    setState(() {
+                      sugerencia = value;
+                    });
+                  },
                 ),
               )
             )
@@ -73,7 +81,35 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               color: AppTheme.primary_yellow,
               disabledColor: Color.fromARGB(255, 245, 212, 130),
               elevation: 0,
-              onPressed: () {Navigator.pop(context);},
+              onPressed: () async{
+                FocusScope.of(context).unfocus();
+                final userServices =Provider.of<UserServices>(context, listen: false);
+                bool respuesta = await userServices.giveSuggestion(int.parse(Preferences.GetIdUser), id_restaurant, sugerencia);
+                if(respuesta){
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialogCustom (
+                        title: "¡Sugerencia enviada!",
+                        message: "Se ha enviado correctamente la sugerencia",
+                      );
+                    });
+
+                }else{
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialogCustom (
+                        title: "¡No se pudo enviar la sugerencia!",
+                        message: "Por favor asegurese de haber llenado todos los campos",
+                      );
+                    });
+                  
+                }
+
+              },
               child: Container(
                   width: 70,
                   height: 30,
@@ -92,7 +128,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     });
   }
 
-  void displayComments(BuildContext context){
+  void displayComments(BuildContext context, int restaurant_id){
     showDialog(barrierDismissible: false,context: context, builder: (context){
       return AlertDialog(
         elevation: 5,
@@ -101,7 +137,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         content: Column(
             mainAxisSize: MainAxisSize.min,
             children:  [
-               const Card(
+                Card(
                 color: Color.fromARGB(255, 216, 216, 216),
                 child: Padding(
                 padding: EdgeInsets.all(8.0),
@@ -110,6 +146,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   maxLines: 6, //or null 
                   decoration: InputDecoration.collapsed(hintText: "Escriba su opinion"),
                   style:  TextStyle(height: 1,fontSize: 14,),
+                  onChanged: (value){
+                    setState(() {
+                      comentario= value;
+                    });
+                  }
                 ),
               )
             ),
@@ -182,7 +223,35 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               color: AppTheme.primary_yellow,
               disabledColor: Color.fromARGB(255, 245, 212, 130),
               elevation: 0,
-              onPressed: () {Navigator.pop(context);},
+              onPressed: () async{
+                FocusScope.of(context).unfocus();
+                final userServices =Provider.of<UserServices>(context, listen: false);
+                bool respuesta = await userServices.giveCalifitation(int.parse(Preferences.GetIdUser), restaurant_id, comentario, calification);
+                if(respuesta){
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialogCustom (
+                        title: "¡Calificación enviada!",
+                        message: "Se ha enviado correctamente la calificación",
+                      );
+                    });
+
+                }else{
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialogCustom (
+                        title: "¡No se pudo enviar la calificación!",
+                        message: "Por favor asegurese de haber llenado todos los campos",
+                      );
+                    });
+                  
+                }
+
+              },
               child: Container(
                   width: 70,
                   height: 30,
@@ -326,8 +395,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ButtonAddList(width: width,text: "Sugerir", icono: Icon(Icons.map_outlined, color: Colors.white, size: 24), color: Color(0xff04A997), action: (){ displaySuggestions(context);}),
-                    ButtonAddList(width: width,text: "Calificar", icono: Icon(Icons.check, color: Colors.white, size: 24), color: Color(0xffA3D818),action: (){ displayComments(context);}),
+                    ButtonAddList(width: width,text: "Sugerir", icono: Icon(Icons.map_outlined, color: Colors.white, size: 24), color: Color(0xff04A997), action: (){ displaySuggestions(context, restaurant.idRestaurant);}),
+                    ButtonAddList(width: width,text: "Calificar", icono: Icon(Icons.check, color: Colors.white, size: 24), color: Color(0xffA3D818),action: (){ displayComments(context, restaurant.idRestaurant);}),
                     ButtonAddList(width: width,text: "Añadir", icono: Icon(Icons.favorite, color: Colors.white, size: 24), color: Color(0xffEB6D4A),action: (){ displayFavorite(context);}),
                    
                    
@@ -509,7 +578,7 @@ class BackArrow extends StatelessWidget {
       bottom: 170,
       child: IconButton(
         icon: Icon(Icons.arrow_back_rounded, size: 50, color: Colors.white),
-        onPressed: null,
+        onPressed: () {Navigator.pop(context);},
       )
     );
   }

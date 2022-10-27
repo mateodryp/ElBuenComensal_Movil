@@ -5,3 +5,5 @@ export 'package:el_buen_comensal/screens/restaurant_screen.dart';
 export 'package:el_buen_comensal/screens/have_to_go_screen.dart';
 export 'package:el_buen_comensal/screens/love_it_screen.dart';
 export 'package:el_buen_comensal/screens/opinions_screen.dart';
+export 'package:el_buen_comensal/screens/favorite_restaurants.dart';
+export 'package:el_buen_comensal/screens/comments.dart';

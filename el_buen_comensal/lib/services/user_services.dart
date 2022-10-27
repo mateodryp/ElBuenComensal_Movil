@@ -110,4 +110,101 @@ class UserServices extends ChangeNotifier {
     
   }
 
+  Future<bool> giveSuggestion(int id_user ,int id_restaurant, String suggestion) async {
+    
+    if(suggestion == ""){
+      return false;
+    }
+
+    final Map<String, dynamic> data = {
+      "id_user": id_user,
+      "id_restaurant": id_restaurant,
+      "comment": suggestion,
+    };
+
+    const Map<String, String> header = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    print(id_user);
+    print(id_restaurant);
+    print(suggestion);
+
+
+    final url = Uri.http(_baseUrl, "/suggestions/comments/");
+    final resp = await http.post(url, body: json.encode(data), headers: header);
+    final Map<String, dynamic> decodedResp = json.decode(resp.body);
+    if(decodedResp["code"].toString() == "1"){
+      return true;
+    }else{
+      return false;
+    }
+
+    
+  }
+
+  Future<bool> giveCalifitation(int id_user ,int id_restaurant, String comments, int calification) async {
+    
+    if(comments == ""){
+      return false;
+    }
+
+    final Map<String, dynamic> data = {
+      "id_user": id_user,
+      "id_restaurant": id_restaurant,
+      "punctuation": calification,
+      "comment": comments,
+    };
+
+    const Map<String, String> header = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    print(id_user);
+    print(id_restaurant);
+    print(comments);
+    print(calification);
+
+    final url = Uri.http(_baseUrl, "/suggestions/score/");
+    final resp = await http.post(url, body: json.encode(data), headers: header);
+    final Map<String, dynamic> decodedResp = json.decode(resp.body);
+    if(decodedResp["code"].toString() == "1"){
+      return true;
+    }else{
+      return false;
+    }
+    
+  }
+
+  Future<bool> changePassword(int id_user , String password) async {
+
+    final Map<String, dynamic> data = {
+      "id_user": id_user,
+      "password": password
+    };
+
+    const Map<String, String> header = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    print(id_user);
+    print(password);
+
+    return true;
+
+    
+    /*final url = Uri.http(_baseUrl, "/suggestions/score/");
+    final resp = await http.post(url, body: json.encode(data), headers: header);
+    final Map<String, dynamic> decodedResp = json.decode(resp.body);
+    if(decodedResp["code"].toString() == "1"){
+      return true;
+    }else{
+      return false;
+    }*/
+    
+  }
+
 }
