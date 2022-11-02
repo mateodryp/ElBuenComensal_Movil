@@ -50,6 +50,7 @@ class Restaurant {
     String description;
     List<String> images;
 
+
     factory Restaurant.fromJson(String str) => Restaurant.fromMap(json.decode(str));
 
     factory Restaurant.fromMap(Map<String, dynamic> json) => Restaurant(

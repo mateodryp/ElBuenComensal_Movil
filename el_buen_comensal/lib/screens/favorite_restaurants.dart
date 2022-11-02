@@ -1,7 +1,10 @@
- import 'package:el_buen_comensal/widgets/button_bar_home.dart';
+ import 'package:el_buen_comensal/providers/restaurants_provider.dart';
+import 'package:el_buen_comensal/widgets/button_bar_home.dart';
 import 'package:el_buen_comensal/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/Restaurant.dart';
 import '../theme/app_theme.dart';
 
 class FavoriteRestaurants extends StatelessWidget {
@@ -10,26 +13,73 @@ class FavoriteRestaurants extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+
+    final restaurant_provider = Provider.of<RestaurantProvider>(context);
+
     return  Scaffold(
       appBar: AppBarSimple(title: "Restaurantes Favoritos",),
-      body: Column(
-        children: [
-          Expanded(
-             child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: 10,
-              itemBuilder: ( _, int index ) => _RestaurantList()
+      body: SingleChildScrollView(
+
+        child: Column(
+
+          children: [
+            FutureBuilder(
+              future: restaurant_provider.getRestaurantsFavorites(),
+              builder: (_, AsyncSnapshot<List<Restaurant>> snapshot){
+                if(!snapshot.hasData){
+                    return Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      height: 30,
+                      width: double.infinity,
+                      child: Text("Cargando.....", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
+                    ),
+                  );
+                }
+                final List<Restaurant> list_favorite = snapshot.data as List<Restaurant>;
+                if(list_favorite.isNotEmpty){
+                    return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: ListView.builder(
+                          
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: list_favorite.length,
+                          itemBuilder: ( _, int index ) => _RestaurantList(restaurant: list_favorite[index])
+                        ),
+                      ),
+                    ],
+                  );
+            
+                }else{
+                    return Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                    height: 30,
+                    width: double.infinity,
+                    child: Text("No hay calificaciones disponibles", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
+                  ),
+                  );    
+                }      
+              
+              }
             ),
-          ),
-        ],
+            
+          ],
+        ),
       ),
     );
   }
 }
 
 class _RestaurantList extends StatelessWidget {
+
+  final Restaurant restaurant;
+
   const _RestaurantList({
-    Key? key,
+    Key? key, required this.restaurant,
   }) : super(key: key);
 
   @override
@@ -46,32 +96,32 @@ class _RestaurantList extends StatelessWidget {
             height: 110,
             child: Row(
               children: [
-                Image(image: NetworkImage("https://i.blogs.es/e1feab/google-fotos/1366_2000.webp"), fit: BoxFit.cover, width: 140, height: 100),
+                Image(image: NetworkImage("http://129.151.106.64:8000" + restaurant.images[0]), fit: BoxFit.cover, width: 140, height: 100),
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 6),
-                    Text("Restaurante el gran restaurante",style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                    Text(restaurant.name,style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                     SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.star, color: AppTheme.primary_yellow , size: 25,),
-                        Icon(Icons.star, color: AppTheme.primary_yellow , size: 25,),
-                        Icon(Icons.star, color: AppTheme.primary_yellow , size: 25,),
-                        Icon(Icons.star, color: AppTheme.primary_yellow , size: 25,),
-                        Icon(Icons.star, color: AppTheme.primary_yellow , size: 25,),
+                        Icon(Icons.star, color: restaurant.punctuation >= 1 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 25,),
+                    Icon(Icons.star, color: restaurant.punctuation >= 2 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 25,),
+                    Icon(Icons.star, color: restaurant.punctuation >= 3 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 25,),
+                    Icon(Icons.star, color: restaurant.punctuation >= 4 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 25,),
+                    Icon(Icons.star, color: restaurant.punctuation == 5 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 25,),   
                         SizedBox(width: 10),
-                        Text("5", style: TextStyle(fontSize: 20),)
+                        Text(restaurant.punctuation.toString(), style: TextStyle(fontSize: 20),)
                       ],
                     ),
                     SizedBox(height: 4),
-                    Text("Cll 67a # 113 - 60", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),),
+                    Text(restaurant.address, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),),
                     SizedBox(height: 4),
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: (){print("Visitar");},
+                          onTap: (){Navigator.pushNamed(context, 'restaurant',arguments: restaurant);},
                           child: Container(
                             alignment: Alignment.center,
                             height: 23,

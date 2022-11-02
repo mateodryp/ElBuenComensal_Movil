@@ -23,7 +23,7 @@ class CarouselImages extends StatelessWidget {
           ),
           items: imgList.map((item) => 
             Container(
-              child: Center(child:Image.network("http://144.22.197.146:8000" +item, fit: BoxFit.cover, width: double.infinity,height: 270)),
+              child: Center(child:Image.network("http://129.151.106.64:8000" +item, fit: BoxFit.cover, width: double.infinity,height: 270)),
             )
           ).toList(),
       ),

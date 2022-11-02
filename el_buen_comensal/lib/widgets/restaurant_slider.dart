@@ -60,7 +60,7 @@ class _RestaurantCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 110,
-            child: Image(image: NetworkImage("http://144.22.197.146:8000" + restaurant.images[0]), fit: BoxFit.cover),
+            child: Image(image: NetworkImage("http://129.151.106.64:8000" + restaurant.images[0]), fit: BoxFit.cover),
           ),
           SizedBox(height: 3),
           Text(restaurant.name, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),

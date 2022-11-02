@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 
 class UserServices extends ChangeNotifier {
-  final String _baseUrl = '144.22.197.146:8000';
+  final String _baseUrl = '129.151.106.64:8000';
   final UserInfoProvider userProvider = UserInfoProvider();
 
   @override

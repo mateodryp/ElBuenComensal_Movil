@@ -1,8 +1,11 @@
+import 'package:el_buen_comensal/providers/califications_provider.dart';
+import 'package:el_buen_comensal/providers/restaurants_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:el_buen_comensal/theme/app_theme.dart';
 import 'package:el_buen_comensal/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../models/Calification.dart';
 import '../models/Restaurant.dart';
 import '../providers/user_info_provider.dart';
 import '../services/user_services.dart';
@@ -270,35 +273,56 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     });
   }
 
-  void displayFavorite(BuildContext context){
-    showDialog(barrierDismissible: false,context: context, builder: (context){
+  void displayFavorite(BuildContext context, int id_restaurant) async{
+    final restaurantProvider =Provider.of<RestaurantProvider>(context, listen: false);
+    bool respuesta = await restaurantProvider.addFavorite(id_restaurant, int.parse(Preferences.GetIdUser));
+    if(respuesta){
+      showDialog(barrierDismissible: false,context: context, builder: (context){
       return AlertDialog(
         elevation: 5,
-        title: Text("Favoritos"),
+        title: Text("Respuesta"),
         shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
         content: Column(
             mainAxisSize: MainAxisSize.min,
             children: const [
-              Text('Este es el contenido de la alerta'),
+              Text('Se ha añadido correctamente'),
               SizedBox( height: 10 ),
-              FlutterLogo( size: 100 )
             ],
           ),
         actions: [
 
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar')
-            ),
-
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Ok')
+              child: const Text('Cerrar', style: TextStyle(color: AppTheme.primary_yellow, fontSize: 16),)
             ),
 
           ],
       );
     });
+
+    }else{
+      showDialog(barrierDismissible: false,context: context, builder: (context){
+      return AlertDialog(
+        elevation: 5,
+        title: Text("Respuesta"),
+        shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Restaurante ya añadido a favoritos'),
+              SizedBox( height: 10 ),]
+          ),
+        actions: [
+
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cerrar', style: TextStyle(color: AppTheme.primary_yellow, fontSize: 16),)
+            ),
+
+          ],
+      );
+    });
+    }
   }
 
   @override
@@ -306,132 +330,204 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
     final Restaurant restaurant = ModalRoute.of(context)!.settings.arguments as Restaurant;
     double width = MediaQuery.of(context).size.width;
-    
-    return  Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                Stack(
-                  children: [
-                    CarouselImages(imgList: restaurant.images),
-                    NumberPhotos(number: restaurant.images.length),
-                    BackArrow(),
-                  ],
-                ),
-                SizedBox(height: 30),
-                Text(restaurant.name, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600)),
-                SizedBox(height: 10),
-                Container(color: AppTheme.dark_gray,height: 1,width: width*0.8,),
-                SizedBox(height: 10),
-                Text("Calificación General", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300)),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                  Icon(Icons.star, color: restaurant.punctuation >= 1 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
-                  Icon(Icons.star, color: restaurant.punctuation >= 2 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
-                  Icon(Icons.star, color: restaurant.punctuation >= 3 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
-                  Icon(Icons.star, color: restaurant.punctuation >= 4 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
-                  Icon(Icons.star, color: restaurant.punctuation == 5 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
-                  SizedBox(width: 5),
-                  Text(restaurant.punctuation.toString(), style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400)),
-                  
-                ],),
-                SizedBox(height: 10),
-                _LineSeparator(),
-      
-                
-      
-      
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
+
+       return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 children: [
-                SizedBox(height: 20),
-                Row(
+                  Stack(
+                    children: [
+                      CarouselImages(imgList: restaurant.images),
+                      NumberPhotos(number: restaurant.images.length),
+                      BackArrow(),
+                    ],
+                  ),
+                  SizedBox(height: 30),
+                  Text(restaurant.name, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600)),
+                  SizedBox(height: 10),
+                  Container(color: AppTheme.dark_gray,height: 1,width: width*0.8,),
+                  SizedBox(height: 10),
+                  Text("Calificación General", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300)),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                    Icon(Icons.star, color: restaurant.punctuation >= 1 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                    Icon(Icons.star, color: restaurant.punctuation >= 2 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                    Icon(Icons.star, color: restaurant.punctuation >= 3 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                    Icon(Icons.star, color: restaurant.punctuation >= 4 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                    Icon(Icons.star, color: restaurant.punctuation == 5 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable , size: 36,),
+                    SizedBox(width: 5),
+                    Text(restaurant.punctuation.toString(), style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400)),
+                    
+                  ],),
+                  SizedBox(height: 10),
+                  _LineSeparator(),
+        
+                  
+        
+        
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
                   children: [
-                    Text("Horarios: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text(restaurant.schedule, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text("Ubicación: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text(restaurant.address, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text("Tipo de comida: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text(restaurant.typeFood, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text("Precio Promedio: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    Text( restaurant.prices.toString() + " COP", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
-                  ],
-                ),
-                SizedBox(height: 20),
-                ButtonDowloadMenu(width: width, urlMenu: restaurant.menu),
-                SizedBox(height: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  Text("En Pocas Palabras ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                  SizedBox(height: 5),
-                  Text(restaurant.description, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
-                ],),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ButtonAddList(width: width,text: "Sugerir", icono: Icon(Icons.map_outlined, color: Colors.white, size: 24), color: Color(0xff04A997), action: (){ displaySuggestions(context, restaurant.idRestaurant);}),
-                    ButtonAddList(width: width,text: "Calificar", icono: Icon(Icons.check, color: Colors.white, size: 24), color: Color(0xffA3D818),action: (){ displayComments(context, restaurant.idRestaurant);}),
-                    ButtonAddList(width: width,text: "Añadir", icono: Icon(Icons.favorite, color: Colors.white, size: 24), color: Color(0xffEB6D4A),action: (){ displayFavorite(context);}),
-                   
-                   
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text("Horarios: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      Text(restaurant.schedule, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text("Ubicación: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      Text(restaurant.address, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text("Tipo de comida: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      Text(restaurant.typeFood, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text("Precio Promedio: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      Text( restaurant.prices.toString() + " COP", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  ButtonDowloadMenu(width: width, urlMenu: restaurant.menu),
+                  SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Text("En Pocas Palabras ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    SizedBox(height: 5),
+                    Text(restaurant.description, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
+                  ],),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ButtonAddList(width: width,text: "Sugerir", icono: Icon(Icons.map_outlined, color: Colors.white, size: 24), color: Color(0xff04A997), action: (){ displaySuggestions(context, restaurant.idRestaurant);}),
+                      ButtonAddList(width: width,text: "Calificar", icono: Icon(Icons.check, color: Colors.white, size: 24), color: Color(0xffA3D818),action: (){ displayComments(context, restaurant.idRestaurant);}),
+                      ButtonAddList(width: width,text: "Añadir", icono: Icon(Icons.favorite, color: Colors.white, size: 24), color: Color(0xffEB6D4A),action: (){ displayFavorite(context, restaurant.idRestaurant);}),
+                     
+                     
+                  ]),
+                  SizedBox(height: 15),
                 ]),
-                SizedBox(height: 15),
-              ]),
-            ),
-            _LineSeparator(),
-            SizedBox(height: 30),
-            Padding(padding:  EdgeInsets.symmetric(horizontal:20),
-            child:Text("Opiniones de los comensales", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
-
-            UsersComment(),
-            UsersComment(),
-            UsersComment(),
-            SizedBox(height: 40)
-          ],
+              ),
+              _LineSeparator(),
+              SizedBox(height: 30),
+              Padding(padding:  EdgeInsets.symmetric(horizontal:20),
+              child:Text("Opiniones de los comensales", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
+              UsersComment(restaurant_id: restaurant.idRestaurant),
+              SizedBox(height: 20)
+            ],
+          ),
         ),
-      ),
-
-      bottomNavigationBar: ButtonBarHome(position: 0),
-    );
-
     
+        bottomNavigationBar: ButtonBarHome(position: 0),
+      );
   }
 }
 
-class UsersComment extends StatelessWidget {
+class UsersComment extends StatefulWidget {
+  final int restaurant_id;
+  
   const UsersComment({
-    Key? key,
+    Key? key, required this.restaurant_id,
   }) : super(key: key);
 
   @override
+  State<UsersComment> createState() => _UsersCommentState();
+}
+
+class _UsersCommentState extends State<UsersComment> {
+  
+  late Future<List<Calification>> _future;
+
+   @override
+  void initState() {
+     final calificationProvider = Provider.of<CalificationProvider>(context, listen: false);
+    _future = calificationProvider.getCalifications(widget.restaurant_id);
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+   
     
+    
+    return FutureBuilder(
+      future: _future,
+      builder:  (_, AsyncSnapshot<List<Calification>> snapshot){
+        if(!snapshot.hasData){
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              height: 30,
+              width: double.infinity,
+              child: Text("Cargando.....", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
+            ),
+          );
+        }
+
+        final List<Calification> list_calification = snapshot.data as List<Calification>;
+
+        if(list_calification.isNotEmpty){
+          return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: list_calification.length,
+                itemBuilder: (_, int index) =>   comment(calification: list_calification[index])
+              ),
+            ),
+          ],
+        );
+          
+        }else{
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              height: 30,
+              width: double.infinity,
+              child: Text("No hay calificaciones disponibles", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
+            ),
+          );
+        }
+
+        
+      }
+    );
+  }
+}
+
+class comment extends StatelessWidget {
+  final Calification calification;
+  const comment({
+    Key? key,
+    required this.calification,
+  }) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal:20),
       child: Column(
@@ -446,16 +542,16 @@ class UsersComment extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
             
-            Text("Kevin Mateo Rodriguez", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
-            Text("22/05/2022",style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
+            Text(calification.commensal + " " + calification.lastName, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
+            Text(calification.date,style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
             Row(children: [
-              Icon(Icons.star, color: AppTheme.primary_yellow),
-              Icon(Icons.star, color: AppTheme.primary_yellow),
-              Icon(Icons.star, color: AppTheme.primary_yellow),
-              Icon(Icons.star, color: AppTheme.primary_yellow),
-              Icon(Icons.star, color: AppTheme.primary_yellow),
+            Icon(Icons.star, color: calification.punctuation >= 1 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: calification.punctuation >= 2 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: calification.punctuation >= 3 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: calification.punctuation >= 4 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
+            Icon(Icons.star, color: calification.punctuation == 5 ? AppTheme.primary_yellow : AppTheme.dark_gray_disable ),
               SizedBox(width: 10),
-              Text("5.0",style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300))
+              Text(calification.punctuation.toString(),style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300))
             ],)
             ],
           )
@@ -464,7 +560,7 @@ class UsersComment extends StatelessWidget {
         ],
       ),
       SizedBox(height: 10),
-      Text("Ad quis laborum occaecat officia ut consectetur reprehenderit est incididunt. Ad sunt cupidatat aute irure ex. Eu veniam in fugiat labore officia proident laborum elit aute consectetur dolore.",style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
+      Text(calification.comment,style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)),
       SizedBox(height: 20),
       Container(height: 1, color: AppTheme.dark_gray, width: double.infinity,)  
         ],
@@ -541,7 +637,7 @@ class _ButtonDowloadMenuState extends State<ButtonDowloadMenu> {
 
   @override
   Widget build(BuildContext context) {
-    final Uri toLaunch =Uri(scheme: 'http', host: '144.22.197.146', path: widget.urlMenu, port:8000 );
+    final Uri toLaunch =Uri(scheme: 'http', host: '129.151.106.64', path: widget.urlMenu, port:8000 );
     return MaterialButton(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: AppTheme.dark_gray,

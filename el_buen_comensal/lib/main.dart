@@ -1,4 +1,6 @@
+import 'package:el_buen_comensal/providers/califications_provider.dart';
 import 'package:el_buen_comensal/providers/change_password_provider.dart';
+import 'package:el_buen_comensal/providers/comments_provider.dart';
 import 'package:el_buen_comensal/providers/login_form_provider.dart';
 import 'package:el_buen_comensal/providers/register_form_provider.dart';
 import 'package:el_buen_comensal/providers/restaurants_provider.dart';
@@ -24,11 +26,13 @@ class AppState extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => UserServices()),
+      ChangeNotifierProvider(create: (_) => CalificationProvider()),
       ChangeNotifierProvider(create: (_) => RegisterFormProvider()),
       ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
       ChangeNotifierProvider(create: (_) => LoginFormProvider()),
       ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-      ChangeNotifierProvider(create: (_) => RestaurantProvider(), lazy: false)
+      ChangeNotifierProvider(create: (_) => RestaurantProvider(), lazy: false),
+      ChangeNotifierProvider(create: (_) => CommentsProvider(), lazy: false)
     ], child: MyApp());
   }
 }
