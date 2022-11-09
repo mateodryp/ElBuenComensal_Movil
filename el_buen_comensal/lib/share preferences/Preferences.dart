@@ -7,9 +7,14 @@ class Preferences {
 
   static String _id_user = "";
   static String _token = "";
+  static String _name = "";
 
   static Future init() async {
     _prefs = await SharedPreferences.getInstance();
+  }
+
+  static String get GetNameUser {
+    return _prefs.getString("name") ?? "";
   }
 
   static String get GetIdUser {
@@ -18,6 +23,11 @@ class Preferences {
 
   static String get GetToken {
     return _prefs.getString("token") ?? "";
+  }
+
+  static set SetNameUser(String name) {
+    _name = name;
+    _prefs.setString("name", _name);
   }
 
   static set SetIdUse(String id) {

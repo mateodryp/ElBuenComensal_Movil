@@ -10,6 +10,8 @@ import '../theme/app_theme.dart';
 class FavoriteRestaurants extends StatelessWidget {
    
   const FavoriteRestaurants({Key? key}) : super(key: key);
+
+  
   
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class FavoriteRestaurants extends StatelessWidget {
                     child: Container(
                     height: 30,
                     width: double.infinity,
-                    child: Text("No hay calificaciones disponibles", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
+                    child: Text("No hay restaurantes en la lista", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
                   ),
                   );    
                 }      
@@ -82,8 +84,63 @@ class _RestaurantList extends StatelessWidget {
     Key? key, required this.restaurant,
   }) : super(key: key);
 
+  void displayEliminate(BuildContext context, int id_restaurant) async{
+    final restaurantProvider =Provider.of<RestaurantProvider>(context, listen: false);
+    bool respuesta = await restaurantProvider.eliminateFavorite(id_restaurant);
+
+    if(respuesta){
+      showDialog(barrierDismissible: false,context: context, builder: (context){
+      return AlertDialog(
+        elevation: 5,
+        title: Text("Respuesta"),
+        shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Se ha eliminado correctamente'),
+              SizedBox( height: 10 ),
+            ],
+          ),
+        actions: [
+
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cerrar', style: TextStyle(color: AppTheme.primary_yellow, fontSize: 16),)
+            ),
+
+          ],
+      );
+    });
+
+    }else{
+      showDialog(barrierDismissible: false,context: context, builder: (context){
+      return AlertDialog(
+        elevation: 5,
+        title: Text("Respuesta"),
+        shape: RoundedRectangleBorder( borderRadius: BorderRadiusDirectional.circular(10) ),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Error al eliminar el restaurante'),
+              SizedBox( height: 10 ),]
+          ),
+        actions: [
+
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cerrar', style: TextStyle(color: AppTheme.primary_yellow, fontSize: 16),)
+            ),
+
+          ],
+      );
+    });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final restaurant_provider = Provider.of<RestaurantProvider>(context);
     return Container(
       width: double.infinity,
       height: 110,
@@ -132,7 +189,10 @@ class _RestaurantList extends StatelessWidget {
                         ),
                         SizedBox(width: 15),
                         GestureDetector(
-                          onTap:  (){print("Eliminar");},
+                          onTap:  () {
+                            displayEliminate(context, restaurant.idRestaurant);
+                            
+                            },
                           child: Container(
                             alignment: Alignment.center,
                             height: 23,

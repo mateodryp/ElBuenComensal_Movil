@@ -1,6 +1,10 @@
+import 'package:el_buen_comensal/share%20preferences/Preferences.dart';
 import 'package:el_buen_comensal/theme/app_theme.dart';
 import 'package:el_buen_comensal/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/restaurants_provider.dart';
 
 class HomeScreen extends StatelessWidget {
    
@@ -8,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final restaurant_provider = Provider.of<RestaurantProvider>(context);
     return  Scaffold(
       drawer: side_menu(),
       appBar: AppBarHome(),
@@ -20,13 +25,13 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 30),
-                  RestaurantSlider(title: "Restaurantes Recomendados"),
+                  RestaurantSlider(title: "Restaurantes Recomendados", list: restaurant_provider.recomendados),
                   SizedBox(height: 20),
-                  RestaurantSlider(title: "Restaurantes Mejor Calificados"),
+                  RestaurantSlider(title: "Restaurantes Mejor Calificados", list: restaurant_provider.mejorCalificados),
                   SizedBox(height: 20),
-                  RestaurantSlider(title: "Restaurantes Populares"),
+                  RestaurantSlider(title: "Restaurantes Nuevos", list: restaurant_provider.nuevos),
                   SizedBox(height: 20),
-                  RestaurantSlider(title: "Restaurantes Nuevos"),
+                  RestaurantSlider(title: "Restaurantes Economicos", list: restaurant_provider.masBaratos),
                 ],
               ),
             ),
@@ -75,13 +80,13 @@ class side_menu extends StatelessWidget {
             SizedBox(height: 320),
             Row(
               children: [
-                SizedBox(width: 20),
+                SizedBox(width: 22),
                 MaterialButton(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   color: AppTheme.primary_yellow,
                   disabledColor: Color.fromARGB(255, 245, 212, 130),
                   elevation: 0,
-                  onPressed: () {Navigator.pop(context);},
+                  onPressed: () {Navigator.pushNamed(context, "login");},
                   child: Container(
                       width: 225,
                       height: 30,
@@ -92,8 +97,11 @@ class side_menu extends StatelessWidget {
                                   TextStyle(color: Colors.white, fontSize: 14))))
                 ),
                 SizedBox(width: 20)
+                
               ],
             ),
+            SizedBox(height: 5),
+            Center(child: Text(Preferences.GetNameUser, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300)))
         ],
       ),
     );

@@ -26,7 +26,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
     if(Preferences.GetIdUser != "" && Preferences.GetToken != ""){
       User user = await userServices.checkSession(int.parse(Preferences.GetIdUser), Preferences.GetToken);
       if(user.code == 1){
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 20));
         context.read<UserInfoProvider>().setUser(user);
         if(user.userNew){
           return Future.value(new GiveInformationScreen());

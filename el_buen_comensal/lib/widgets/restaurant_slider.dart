@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 
 class RestaurantSlider extends StatefulWidget {
   final String title;
+  final List<Restaurant> list;
 
-  const RestaurantSlider({Key? key, required this.title,}): super(key: key);
+  const RestaurantSlider({Key? key, required this.title, required this.list,}): super(key: key);
 
   @override
   State<RestaurantSlider> createState() => _RestaurantSliderState();
@@ -18,7 +19,7 @@ class _RestaurantSliderState extends State<RestaurantSlider> {
   @override
   Widget build(BuildContext context) {
 
-    final restaurant_provider = Provider.of<RestaurantProvider>(context);
+    
 
 
     return Container(
@@ -31,9 +32,9 @@ class _RestaurantSliderState extends State<RestaurantSlider> {
         Expanded(
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: restaurant_provider.prueba.length,
+            itemCount: widget.list.length,
             itemBuilder: (_, int index){
-              return GestureDetector(child: _RestaurantCard(restaurant: restaurant_provider.prueba[index],), onTap: () =>  Navigator.pushNamed(context, 'restaurant', arguments: restaurant_provider.prueba[index]));
+              return GestureDetector(child: _RestaurantCard(restaurant: widget.list[index],), onTap: () =>  Navigator.pushNamed(context, 'restaurant', arguments:widget.list[index]));
             }
           ),
         )

@@ -65,7 +65,7 @@ class _FormWidgetState extends State<FormWidget> {
   @override
   Widget build(BuildContext context) {
     final loginForm = Provider.of<LoginFormProvider>(context);
-    login = loginForm.formkey;
+    login = loginForm.key;
 
     return Form(
         key: login,

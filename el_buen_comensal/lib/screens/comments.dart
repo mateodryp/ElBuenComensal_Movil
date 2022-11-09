@@ -18,22 +18,26 @@ class Comments extends StatelessWidget {
 
     return  Scaffold(
       appBar: AppBarSimple(title: "Comentarios",),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Container(height: 1, color: AppTheme.dark_gray,),
-          ),
-          SizedBox(height: 10),
-          SingleChildScrollView(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: comments_provider.prueba.length,
-              itemBuilder: (_, int index) => CommentsList(comment: comments_provider.prueba[index])  )
-            )
-          
-        ]
+      body: SingleChildScrollView(
+        child: Column( 
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Container(height: 1, color: AppTheme.dark_gray,),
+            ),
+            SizedBox(height: 10),
+            SingleChildScrollView(
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: comments_provider.prueba.length,
+                itemBuilder: (_, int index) => CommentsList(comment: comments_provider.prueba[index])  )
+              )
+            
+          ]
+        ),
       ),
       bottomNavigationBar:ButtonBarHome(position: 2) 
     );

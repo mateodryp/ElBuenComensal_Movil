@@ -275,7 +275,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   void displayFavorite(BuildContext context, int id_restaurant) async{
     final restaurantProvider =Provider.of<RestaurantProvider>(context, listen: false);
+    print(Preferences.GetIdUser);
     bool respuesta = await restaurantProvider.addFavorite(id_restaurant, int.parse(Preferences.GetIdUser));
+
     if(respuesta){
       showDialog(barrierDismissible: false,context: context, builder: (context){
       return AlertDialog(

@@ -1,3 +1,5 @@
+
+
 import 'package:el_buen_comensal/models/User.dart';
 import 'package:el_buen_comensal/providers/user_info_provider.dart';
 import 'package:el_buen_comensal/share%20preferences/Preferences.dart';
@@ -54,8 +56,10 @@ class UserServices extends ChangeNotifier {
     final resp = await http.post(url, body: json.encode(data), headers: header);
     final Map<String, dynamic> decodedResp = json.decode(resp.body);
     if(decodedResp["code"].toString() == "1"){
+      print(decodedResp);
       Preferences.SetIdUse = decodedResp["id_user"].toString();
       Preferences.SetToken = decodedResp["token"];
+      Preferences.SetNameUser = decodedResp["name"] + " " +decodedResp["last_name"];
       return User(age: decodedResp["age"],code: decodedResp["code"],email: decodedResp["email"], idCommensal: decodedResp["id_commensal"], idUser: decodedResp["id_user"], lastName: decodedResp["last_name"], name: decodedResp["name"],  phoneNumber: decodedResp["phone_number"],token: decodedResp["token"], userNew: decodedResp["new"] );
     }else{
       return User(age: 1,code: decodedResp["code"],email: "", idCommensal: 0, idUser: 0, lastName: "", name: "",  phoneNumber: "",token: "", userNew: false);

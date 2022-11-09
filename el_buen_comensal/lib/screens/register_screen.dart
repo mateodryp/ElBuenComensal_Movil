@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final registerForm = Provider.of<RegisterFormProvider>(context);
 
-    register = registerForm.formkey;
+    register = registerForm.key;
 
     return Scaffold(
         backgroundColor: AppTheme.dark_gray,
@@ -102,7 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     InputRegister(
                         hint_text: 'Edad',
                         type: TextInputType.number,
-                        isPasswd: true,
+                        isPasswd: false,
                         validate: validateEmpty,
                         changed: (value) {
                           setState(() {
@@ -176,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           title: "¡Usuario Registrado!",
                                           message:
                                               "Su usuario se ha registrado de manera exitosa",
-                                          rute: "login");
+                                          );
                                     });
                               } else {
                                 showDialog(

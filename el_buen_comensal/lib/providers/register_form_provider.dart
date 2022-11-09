@@ -3,17 +3,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RegisterFormProvider extends ChangeNotifier {
-  GlobalKey<FormState> formkey = new GlobalKey<FormState>();
+  GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
     
     @override
     Widget build(BuildContext context) {
      return Container(
-       key: formkey,
+       key: _formkey,
      );
    }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  get key{
+    return _formkey;
+  }
+
 
   set isLoading(bool value) {
     _isLoading = value;
@@ -21,6 +26,6 @@ class RegisterFormProvider extends ChangeNotifier {
   }
 
   bool isValidForm(){
-    return formkey.currentState?.validate() ?? false;
+    return _formkey.currentState?.validate() ?? false;
   }
 }

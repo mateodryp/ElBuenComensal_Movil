@@ -22,6 +22,7 @@ class CommentsProvider extends ChangeNotifier {
   }
 
   Future<List<Comment>> getComments() async {
+    print("comentarios");
 
     const Map<String, String> header = {
       'Content-type': 'application/json',

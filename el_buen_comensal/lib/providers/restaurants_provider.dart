@@ -14,7 +14,10 @@ class RestaurantProvider extends ChangeNotifier {
 
  final String _baseUrl = '129.151.106.64:8000';
 
-  List<Restaurant> prueba = [];
+  List<Restaurant> nuevos = [];
+  List<Restaurant> recomendados = [];
+  List<Restaurant> masBaratos = [];
+  List<Restaurant> mejorCalificados = [];
   bool isloading = true;
   final debouncer = Debouncer(
     duration: Duration(milliseconds: 500),
@@ -25,24 +28,73 @@ class RestaurantProvider extends ChangeNotifier {
 
   RestaurantProvider() {
 
-    this.getRestaurants();
+    this.getRestaurantsNews();
+    this.getRestaurantsRec();
+    this.getRestaurantsCheap();
+    this.getRestaurantsBest();
 
   }
 
 
-  void getRestaurants() async {
-
+  void getRestaurantsNews() async {
     final url = Uri.http(_baseUrl, "/restaurants/restaurants_info/");
     final resp = await http.get(url);
     final restaurants = Restaurants.fromJson(utf8.decode(resp.bodyBytes));
-    prueba = restaurants.results;
+    nuevos = restaurants.results;
     isloading = false;
     notifyListeners();
   }
 
+  void getRestaurantsRec() async {
+    final url = Uri.http(_baseUrl, "/restaurants/recommender/" + Preferences.GetIdUser + "/");
+    final resp = await http.get(url);
+    final restaurants = Restaurants.fromJson(utf8.decode(resp.bodyBytes));
+    recomendados = restaurants.results;
+    isloading = false;
+    notifyListeners();
+  }
+
+  void getRestaurantsCheap() async {
+    final url = Uri.http(_baseUrl, "/restaurants/restaurants_list_prices/");
+    final resp = await http.get(url);
+    final restaurants = Restaurants.fromJson(utf8.decode(resp.bodyBytes));
+    masBaratos = restaurants.results;
+    isloading = false;
+    notifyListeners();
+  }
+
+  
+
+  void getRestaurantsBest() async {
+    final url = Uri.http(_baseUrl, "/restaurants/restaurants_list_punctuation/");
+    final resp = await http.get(url);
+    final restaurants = Restaurants.fromJson(utf8.decode(resp.bodyBytes));
+    mejorCalificados = restaurants.results;
+    isloading = false;
+    notifyListeners();
+  }
+
+  Future<bool> eliminateFavorite(int id_restaurant) async{
+
+    Map<String, dynamic> parametros = {
+      "id_restaurant" : id_restaurant.toString(),
+      "id_user" : Preferences.GetIdUser
+    };
+
+    final url = Uri.http(_baseUrl, "/suggestions/favorites_delete/", parametros );
+    final resp = await http.delete(url);
+    print(url);
+    final Map<String, dynamic> decodedResp = json.decode(utf8.decode(resp.bodyBytes));
+    if(decodedResp["code"] == 1){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   Future<List<Restaurant>> getRestaurantsFavorites() async {
 
-    final url = Uri.http(_baseUrl, "/suggestions/favorites_list_restaurant/"+ Preferences.GetIdUser +"/");
+    final url = Uri.http(_baseUrl, "/suggestions/favorites_list_restaurant/" + Preferences.GetIdUser + "/");
     final resp = await http.get(url);
     final Map<String, dynamic> decodedResp = json.decode(utf8.decode(resp.bodyBytes));
     if(decodedResp["restaurants"].length == 0){
@@ -83,7 +135,7 @@ class RestaurantProvider extends ChangeNotifier {
       "id_user": id_user.toString(),
       "id_restaurant": id_restaurant.toString()
     };
-
+ 
     final url = Uri.http(_baseUrl, "/suggestions/favorites/");
     final resp = await http.post(url, body: data);
     final Map<String, dynamic> decodedResp = json.decode(utf8.decode(resp.bodyBytes));
